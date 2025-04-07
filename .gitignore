@@ -103,3 +103,9 @@ Desktop.ini
 appsettings.*.json
 !appsettings.json
 !appsettings.Example.json
+
+# -------------------------
+# VSCode
+# -------------------------
+.vscode/
+.history/
