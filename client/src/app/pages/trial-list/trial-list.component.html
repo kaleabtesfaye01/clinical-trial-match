@@ -1,0 +1,23 @@
+<div *ngIf="loading">Loading...</div>
+
+<div *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+</div>
+
+<div *ngIf="!loading && !errorMessage && trials.length > 0">
+    <div *ngFor="let trial of trials">
+        <h3>{{ trial.briefTitle }}</h3>
+        <p>{{ trial.briefSummary }}</p>
+        <!-- Add other trial details as needed -->
+    </div>
+</div>
+
+<div *ngIf="!loading && !errorMessage && trials.length === 0">
+    <p>No trials found.</p>
+</div>
+
+<div class="pagination-controls">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage * pageSize >= totalRecords">Next</button>
+</div>
