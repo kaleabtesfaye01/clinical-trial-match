@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { PatientData } from '../../models/patient-data.model';
+import { TrialService } from '../../core/services/trial.service';
 
 @Component({
   selector: 'app-patient-form',
@@ -19,10 +20,11 @@ export class PatientFormComponent implements OnInit {
   // The Reactive Form group
   patientForm!: FormGroup;
 
-  // For preview
   submittedData: PatientData | null = null;
+  matchingTrials: any[] = [];
+  errorMessage: string = '';
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private trialService: TrialService) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -46,8 +48,7 @@ export class PatientFormComponent implements OnInit {
 
   onSubmit(): void {
     if (this.patientForm.valid) {
-      // Capture the form data
-      const formData: PatientData = {
+      const input: PatientData = {
         age: this.f['age'].value,
         gender: this.f['gender'].value,
         condition: this.f['condition'].value,
@@ -55,10 +56,17 @@ export class PatientFormComponent implements OnInit {
         notes: this.f['notes'].value,
       };
 
-      // For demonstration, we store it locally
-      this.submittedData = formData;
+      this.trialService.matchTrialsWithAi(input).subscribe({
+        next: (matchedTrials) => {
+          this.matchingTrials = matchedTrials;
+          this.submittedData = input; // for preview
+        },
+        error: (err) => {
+          console.error('Error matching with AI', err);
+          this.errorMessage = 'An error occurred while matching.';
+        },
+      });
     } else {
-      // Mark all controls as touched to display validation errors
       this.patientForm.markAllAsTouched();
     }
   }

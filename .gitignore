@@ -54,6 +54,10 @@ testem.log
 project.lock.json
 project.fragment.lock.json
 artifacts/
+**/appsettings.*.json
+!**/appsettings.json 
+.env
+*.Development.json
 
 # -------------------------
 # Database

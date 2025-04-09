@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
-namespace _.Models
+namespace ClinicalTrialMatcher.Models
 {
     public class Location
     {
@@ -14,5 +15,11 @@ namespace _.Models
         public string? State { get; set; }
         public string? Zip { get; set; }
         public string? Country { get; set; }
+
+        // Foreign key reference to the parent ClinicalTrial
+        [ForeignKey("ClinicalTrial")]
+        public string ClinicalTrialNctId { get; set; } = null!;
+        [JsonIgnore]
+        public ClinicalTrial ClinicalTrial { get; set; } = null!;
     }
 }

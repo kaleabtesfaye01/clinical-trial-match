@@ -1,52 +1,51 @@
+using System.Text.Json.Serialization;
+using ClinicalTrialMatcher.Data;
+using ClinicalTrialMatcher.Interfaces;
+using ClinicalTrialMatcher.Services;
 using Microsoft.EntityFrameworkCore;
-using _.Data;
-using _.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+// Read the connection string from configuration.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+    "Host=localhost;Database=clinicaltrials;Username=student;Password=Kaleab66488605!";
 
-// Configure SQLite connection string
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=trials.db";
+// Register the TrialsContext with PostgreSQL and enable vector support.
 builder.Services.AddDbContext<TrialsContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseNpgsql(connectionString, npgsqlOptions =>
+    {
+        npgsqlOptions.UseVector();
+    }));
 
-// Register HttpClient and ClinicalTrialsService (leave as transient or scoped)
-builder.Services.AddHttpClient<ClinicalTrialsService>();
-// No need to register ClinicalTrialsService again explicitly if using AddHttpClient
+// Register HttpClient and our service implementations.
+builder.Services.AddHttpClient<IClinicalTrialsService, ClinicalTrialsService>();
+builder.Services.AddHttpClient<IVectorizationService, VectorizationService>();
 
-// Register the background service using the factory approach
-builder.Services.AddHostedService<ClinicalTrialsBackgroundService>();
+// Register our matching service and vectorization service.
+builder.Services.AddScoped<ITrialMatchingService, TrialMatchingService>();
+builder.Services.AddScoped<IVectorizationService, VectorizationService>();
 
-// Configure CORS (adjust origins as needed)
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAngular",
-        policy => policy.WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
-});
-
-// Add controllers and Swagger for API documentation
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
-});
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Enable Swagger UI in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clinical Trials API V1");
-    });
+    app.UseSwaggerUI();
 }
 
-app.UseCors("AllowAngular");
+app.UseCors(policy => policy
+    .WithOrigins("http://localhost:4200")
+    .AllowAnyHeader()
+    .AllowAnyMethod());
+
 app.MapControllers();
+
 app.Run();
