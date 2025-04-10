@@ -1,18 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatChipsModule } from '@angular/material/chips';
 import { ClinicalTrial } from '../../models/clinical-trial.model';
-import { TrialDetailComponent } from '../trial-detail/trial-detail.component';
-
-interface Location {
-  status?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-}
+import { TrialService } from '../../core/services/trial.service';
+import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.component';
 
 @Component({
   selector: 'app-trial-list',
@@ -20,39 +17,50 @@ interface Location {
   imports: [
     CommonModule,
     MatCardModule,
-    MatChipsModule,
+    MatButtonModule,
+    MatIconModule,
     MatProgressSpinnerModule,
-    MatDialogModule,
-    TrialDetailComponent
+    MatChipsModule,
+    NavMenuComponent,
   ],
   templateUrl: './trial-list.component.html',
-  styleUrls: ['./trial-list.component.scss']
+  styleUrls: ['./trial-list.component.scss'],
 })
-export class TrialListComponent {
-  @Input() trials: ClinicalTrial[] = [];
-  @Input() loading = false;
+export class TrialListComponent implements OnInit, OnDestroy {
+  trials: ClinicalTrial[] = [];
+  loading = true;
+  private subscription?: Subscription;
 
-  constructor(private dialog: MatDialog) {}
+  constructor(private trialService: TrialService, private router: Router) {}
 
-  openTrialDetails(trial: ClinicalTrial): void {
-    this.dialog.open(TrialDetailComponent, {
-      data: { trial },
-      width: '100%',
-      maxWidth: '1200px',
-      maxHeight: '90vh',
-      panelClass: 'trial-detail-dialog'
+  ngOnInit(): void {
+    this.subscription = this.trialService.matchedTrials$.subscribe((trials) => {
+      this.trials = trials;
+      this.loading = false;
     });
   }
 
-  trackByNctId(_: number, trial: ClinicalTrial): string {
-    return trial.nctId;
+  ngOnDestroy(): void {
+    this.subscription?.unsubscribe();
   }
 
-  trackByCondition(_: number, condition: string): string {
-    return condition;
+  startNewSearch(): void {
+    this.router.navigate(['/patient-form']);
   }
 
-  trackByLocation(_: number, location: Location): string {
-    return `${location.city || ''}-${location.state || ''}-${location.country || ''}`;
+  viewTrialDetails(trial: ClinicalTrial): void {
+    this.router.navigate(['/trial', trial.nctId]);
+  }
+
+  formatLocation(location: {
+    city?: string;
+    state?: string;
+    country?: string;
+  }): string {
+    const parts = [];
+    if (location.city) parts.push(location.city);
+    if (location.state) parts.push(location.state);
+    if (location.country) parts.push(location.country);
+    return parts.join(', ') || 'Location not specified';
   }
 }

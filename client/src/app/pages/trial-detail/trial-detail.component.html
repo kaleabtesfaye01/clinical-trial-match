@@ -1,183 +1,129 @@
-@if (trial) {
-  <div class="trial-detail">
-    <!-- Header -->
-    <header>
-      <h2>{{ trial.briefTitle }}</h2>
-      <div class="header-info">
-        <span>NCT ID: {{ trial.nctId }}</span>
-        <span class="status-chip" [class.active]="trial.overallStatus === 'Recruiting'">
-          {{ trial.overallStatus }}
-        </span>
-        <span>Last Updated: {{ trial.lastUpdatePostDate | date }}</span>
+<app-nav-menu></app-nav-menu>
+<div class="trial-detail-container">
+  <div class="back-button">
+    <button mat-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Trial List
+    </button>
+  </div>
+
+  <ng-container *ngIf="trial$ | async as trial; else loadingOrError">
+    <mat-card class="trial-header">
+      <mat-card-content>
+        <h1>{{ trial.briefTitle }}</h1>
+        <div class="meta-info">
+          <mat-chip>NCT ID: {{ trial.nctId }}</mat-chip>
+          <mat-chip [class]="'status-chip ' + trial.overallStatus.toLowerCase()">
+            Status: {{ trial.overallStatus }}
+          </mat-chip>
+          <mat-chip>Last Updated: {{ formatDate(trial.lastUpdatePostDate || '') }}</mat-chip>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="trial-overview">
+      <mat-card-header>
+        <mat-card-title>Study Overview</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>{{ trial.briefSummary }}</p>
+        <mat-divider></mat-divider>
+        <h3>Conditions</h3>
+        <div class="conditions">
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let condition of trial.conditions">{{ condition }}</mat-chip>
+          </mat-chip-listbox>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="trial-details">
+      <mat-card-header>
+        <mat-card-title>Participation Criteria</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="criteria-section">
+          <h3>Eligibility</h3>
+          <div [class.collapsed]="!showFullCriteria">
+            <markdown [data]="trial.eligibilityCriteria || ''"></markdown>
+          </div>
+          <button class="toggle-btn" (click)="toggleCriteria()">
+            {{ showFullCriteria ? 'Show Less' : 'Show Full Criteria' }}
+          </button>
+        </div>
+
+        <mat-divider></mat-divider>
+        <div class="criteria-section">
+          <h3>Age Range</h3>
+          <p>{{ trial.minimumAge || 'N/A' }} - {{ trial.maximumAge || 'N/A' }}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="criteria-section">
+          <h3>Sex</h3>
+          <p>{{ trial.sex || 'Not specified' }}</p>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="criteria-section">
+          <h3>Healthy Volunteers</h3>
+          <p>{{ trial.healthyVolunteers || 'No' }}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="trial-locations" *ngIf="trial.locations?.length">
+      <mat-card-header>
+        <mat-card-title>Study Locations</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="locations-list">
+          <div *ngFor="let location of trial.locations" class="location-item">
+            <h4>{{ location.city }}, {{ location.state }}, {{ location.country }}</h4>
+            <p class="status" [class.not-recruiting]="location.status?.toLowerCase() !== 'recruiting'">
+              Status: {{ location.status }}
+            </p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="trial-dates">
+      <mat-card-header>
+        <mat-card-title>Study Timeline</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="dates-grid">
+          <div class="date-item">
+            <h4>Start Date</h4>
+            <p>{{ formatDate(trial.startDate || '') }}</p>
+          </div>
+          <div class="date-item">
+            <h4>First Posted</h4>
+            <p>{{ formatDate(trial.firstPostDate || '') }}</p>
+          </div>
+          <div class="date-item">
+            <h4>Last Update Posted</h4>
+            <p>{{ formatDate(trial.lastUpdatePostDate || '') }}</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
+
+  <ng-template #loadingOrError>
+    <div class="loading-error-container" *ngIf="error; else loading">
+      <mat-card class="error-card">
+        <mat-card-content>
+          <mat-icon color="warn">error_outline</mat-icon>
+          <p>{{ error }}</p>
+          <button mat-raised-button color="primary" (click)="goBack()">Return to Trial List</button>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <ng-template #loading>
+      <div class="loading-container">
+        <mat-spinner diameter="48"></mat-spinner>
+        <p>Loading trial details...</p>
       </div>
-    </header>
-
-    <!-- Study Overview -->
-    <section>
-      <h3>Study Overview</h3>
-      <mat-list>
-        <mat-list-item>
-          <span matListItemTitle>Brief Title</span>
-          <span matListItemLine>{{ trial.briefTitle }}</span>
-        </mat-list-item>
-        @if (trial.officialTitle) {
-          <mat-list-item>
-            <span matListItemTitle>Official Title</span>
-            <span matListItemLine>{{ trial.officialTitle }}</span>
-          </mat-list-item>
-        }
-        @if (trial.briefSummary) {
-          <mat-list-item>
-            <span matListItemTitle>Brief Summary</span>
-            <span matListItemLine>{{ trial.briefSummary }}</span>
-          </mat-list-item>
-        }
-        @if (trial.conditions && trial.conditions.length > 0) {
-          <mat-list-item>
-            <span matListItemTitle>Conditions</span>
-            <span matListItemLine>{{ trial.conditions.join(', ') }}</span>
-          </mat-list-item>
-        }
-      </mat-list>
-    </section>
-
-    <!-- Contacts and Locations -->
-    @if (trial.locations && trial.locations.length > 0) {
-      <section>
-        <h3>Contacts and Locations</h3>
-        <mat-list>
-          @for (location of trial.locations; track location) {
-            <mat-list-item>
-              <div matListItemTitle class="location-header">
-                <span class="location-status" [class.active]="location.status === 'Recruiting'">
-                  {{ location.status }}
-                </span>
-              </div>
-              <span matListItemLine>{{ location.city }}, {{ location.state }}, {{ location.country }}</span>
-            </mat-list-item>
-          }
-        </mat-list>
-      </section>
-    }
-
-    <!-- Participation Criteria -->
-    <section>
-      <h3>Participation Criteria</h3>
-      <mat-list>
-        @if (trial.eligibilityCriteria) {
-          <mat-list-item>
-            <span matListItemTitle>Eligibility Criteria</span>
-            <span matListItemLine>{{ trial.eligibilityCriteria }}</span>
-          </mat-list-item>
-        }
-        @if (trial.minimumAge || trial.maximumAge) {
-          <mat-list-item>
-            <span matListItemTitle>Age</span>
-            <span matListItemLine>
-              @if (trial.minimumAge && trial.maximumAge) {
-                {{ trial.minimumAge }} - {{ trial.maximumAge }} years
-              } @else if (trial.minimumAge) {
-                {{ trial.minimumAge }}+ years
-              } @else {
-                Up to {{ trial.maximumAge }} years
-              }
-            </span>
-          </mat-list-item>
-        }
-        @if (trial.sex) {
-          <mat-list-item>
-            <span matListItemTitle>Sex</span>
-            <span matListItemLine>{{ trial.sex }}</span>
-          </mat-list-item>
-        }
-        @if (trial.healthyVolunteers !== undefined) {
-          <mat-list-item>
-            <span matListItemTitle>Healthy Volunteers</span>
-            <span matListItemLine>{{ trial.healthyVolunteers ? 'Yes' : 'No' }}</span>
-          </mat-list-item>
-        }
-      </mat-list>
-    </section>
-
-    <!-- Study Record Dates -->
-    <section>
-      <h3>Study Record Dates</h3>
-      <mat-list>
-        @if (trial.firstSubmittedDate) {
-          <mat-list-item>
-            <span matListItemTitle>First Submitted</span>
-            <span matListItemLine>{{ trial.firstSubmittedDate | date }}</span>
-          </mat-list-item>
-        }
-        @if (trial.startDate) {
-          <mat-list-item>
-            <span matListItemTitle>Start Date</span>
-            <span matListItemLine>{{ trial.startDate | date }}</span>
-          </mat-list-item>
-        }
-        @if (trial.completionDate) {
-          <mat-list-item>
-            <span matListItemTitle>Completion Date</span>
-            <span matListItemLine>{{ trial.completionDate | date }}</span>
-          </mat-list-item>
-        }
-        @if (trial.lastUpdateSubmitDate) {
-          <mat-list-item>
-            <span matListItemTitle>Last Update Submitted</span>
-            <span matListItemLine>{{ trial.lastUpdateSubmitDate | date }}</span>
-          </mat-list-item>
-        }
-        @if (trial.lastUpdatePostDate) {
-          <mat-list-item>
-            <span matListItemTitle>Last Update Posted</span>
-            <span matListItemLine>{{ trial.lastUpdatePostDate | date }}</span>
-          </mat-list-item>
-        }
-      </mat-list>
-    </section>
-
-    <!-- Additional Information -->
-    <section>
-      <h3>Additional Information</h3>
-      <mat-list>
-        @if (trial.keywords && trial.keywords.length > 0) {
-          <mat-list-item>
-            <span matListItemTitle>Keywords</span>
-            <span matListItemLine>{{ trial.keywords.join(', ') }}</span>
-          </mat-list-item>
-        }
-        @if (trial.studyType) {
-          <mat-list-item>
-            <span matListItemTitle>Study Type</span>
-            <span matListItemLine>{{ trial.studyType }}</span>
-          </mat-list-item>
-        }
-        @if (trial.phases && trial.phases.length > 0) {
-          <mat-list-item>
-            <span matListItemTitle>Phase</span>
-            <span matListItemLine>{{ trial.phases.join(', ') }}</span>
-          </mat-list-item>
-        }
-        @if (trial.interventions && trial.interventions.length > 0) {
-          <mat-list-item>
-            <span matListItemTitle>Interventions</span>
-            <span matListItemLine>
-              @for (intervention of trial.interventions; track intervention) {
-                <div>
-                  <strong>{{ intervention.name }}</strong> ({{ intervention.type }})
-                  @if (intervention.description) {
-                    : {{ intervention.description }}
-                  }
-                </div>
-              }
-            </span>
-          </mat-list-item>
-        }
-      </mat-list>
-    </section>
-  </div>
-} @else {
-  <div class="loading-container">
-    <mat-spinner></mat-spinner>
-  </div>
-}
+    </ng-template>
+  </ng-template>
+</div>

@@ -1,177 +1,292 @@
-/* You can add global styles to this file, and also import other style files */
-@use '@angular/material' as mat;
-@include mat.core();
+@use "@angular/material" as mat;
 
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$clinical-trial-matcher-primary: mat.define-palette(mat.$indigo-palette);
-$clinical-trial-matcher-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+// ========================
+// Theme Configuration
+// ========================
+$primary-palette: mat.m2-define-palette(mat.$m2-indigo-palette, 600, 300, 900);
+$accent-palette: mat.m2-define-palette(mat.$m2-cyan-palette, A200, A100, A400);
+$warn-palette: mat.m2-define-palette(mat.$m2-red-palette);
 
-// The warn palette is optional (defaults to red).
-$clinical-trial-matcher-warn: mat.define-palette(mat.$red-palette);
-
-// Create the theme object. A theme consists of configurations for individual
-// theming systems such as "color" or "typography".
-$clinical-trial-matcher-theme: mat.define-light-theme((
-  color: (
-    primary: $clinical-trial-matcher-primary,
-    accent: $clinical-trial-matcher-accent,
-    warn: $clinical-trial-matcher-warn,
+$theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $primary-palette,
+      accent: $accent-palette,
+      warn: $warn-palette,
+    ),
+    typography: mat.m2-define-typography-config(),
+    density: 0,
   )
-));
+);
 
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($clinical-trial-matcher-theme);
+@include mat.all-component-themes($theme);
 
-/* Global styles */
-html, body {
+// ========================
+// Base Styles
+// ========================
+html,
+body {
   height: 100%;
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #f8f9fa;
-  color: #212529;
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f8fafc;
+  color: #1a2b3c;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 * {
   box-sizing: border-box;
 }
 
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+// ========================
+// Typography
+// ========================
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: #1a2b3c;
+  margin: 0 0 1rem;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2rem;
+}
+h2 {
+  font-size: 1.5rem;
+}
+h3 {
+  font-size: 1.25rem;
+}
+h4 {
+  font-size: 1.125rem;
+}
+
+p {
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.text-muted {
+  color: #6c757d;
+}
+.text-primary {
+  color: #4caf50;
+}
+.heading-accent {
+  color: #14b8a6;
+}
+
+// ========================
+// Layout & Containers
+// ========================
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
-}
-
-/* Dialog styles */
-.trial-detail-dialog {
-  .mat-mdc-dialog-container {
-    padding: 0;
-  }
-
-  .mdc-dialog__surface {
-    border-radius: 8px;
-  }
-
-  .mat-mdc-dialog-content {
-    max-height: 85vh;
-    padding: 0;
-  }
-}
-
-/* Trial list styles */
-.trial-list-container {
   padding: 24px;
 }
 
-.trials-grid {
+.grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-.trial-card {
+// ========================
+// Utility Classes
+// ========================
+.btn-rounded {
+  border-radius: 8px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  text-transform: none;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: background-color 0.2s ease;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease-in-out;
 
   &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 }
 
-.header-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  margin-top: 8px;
+.onboarding-modal {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 600px;
+  margin: 2rem auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  color: #1a2b3c;
 }
 
-.status-chip {
-  padding: 4px 8px;
-  border-radius: 16px;
-  background-color: #e9ecef;
-  font-size: 12px;
+// ========================
+// Angular Material Overrides
+// ========================
+.mat-mdc-card {
+  @extend .card;
 
-  &.active {
-    background-color: #28a745;
-    color: white;
+  .mat-mdc-card-header {
+    padding: 24px 24px 0;
+  }
+
+  .mat-mdc-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .mat-mdc-card-content {
+    padding: 24px;
   }
 }
 
-.conditions {
-  margin-top: 16px;
+.mat-mdc-chip {
+  font-weight: 500;
+  --mdc-chip-elevated-container-color: rgba(76, 175, 80, 0.08);
+  --mdc-chip-label-text-color: #2e7d32;
 
-  h4 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-}
-
-.locations {
-  margin-top: 16px;
-
-  h4 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .location {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 4px;
-  }
-
-  .location-status {
-    padding: 2px 6px;
-    border-radius: 12px;
-    background-color: #e9ecef;
-    font-size: 12px;
-
-    &.active {
-      background-color: #28a745;
-      color: white;
+  &.status-chip {
+    &.recruiting {
+      --mdc-chip-elevated-container-color: rgba(25, 118, 210, 0.08);
+      --mdc-chip-label-text-color: #1976d2;
+    }
+    &.completed {
+      --mdc-chip-elevated-container-color: rgba(76, 175, 80, 0.08);
+      --mdc-chip-label-text-color: #2e7d32;
+    }
+    &.not-recruiting {
+      --mdc-chip-elevated-container-color: rgba(244, 67, 54, 0.08);
+      --mdc-chip-label-text-color: #d32f2f;
     }
   }
+}
 
-  .more-locations {
-    margin: 8px 0 0;
-    font-size: 12px;
-    color: #6c757d;
+.mat-mdc-button {
+  @extend .btn-rounded;
+
+  &.mat-primary {
+    background-color: #4caf50;
+    color: white;
+    height: 48px;
   }
 }
 
-.summary {
-  margin-top: 16px;
+button.mat-raised-button {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0 24px;
+  height: 48px;
 
-  h4 {
-    margin: 0 0 8px;
-    font-size: 14px;
-    font-weight: 500;
+  mat-icon {
+    margin-right: 8px;
   }
 
-  p {
-    margin: 0;
-    font-size: 14px;
-    color: #495057;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  &:hover {
+    background-color: #1565c0 !important;
   }
 }
 
-/* Loading styles */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #4caf50;
+}
+
+.mat-divider {
+  margin: 24px 0;
+  opacity: 0.1;
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+
+  .mat-mdc-text-field-wrapper {
+    background-color: white;
+    border-radius: 8px;
+  }
+
+  .mat-mdc-form-field-flex {
+    padding: 0 16px;
+  }
+}
+
+// ========================
+// Dark Mode Support
+// ========================
+
+
+// ========================
+// Responsive Design
+// ========================
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  .mat-mdc-card {
+    border-radius: 12px;
+
+    .mat-mdc-card-header {
+      padding: 16px 16px 0;
+    }
+
+    .mat-mdc-card-content {
+      padding: 16px;
+    }
+  }
+}
+
+// ========================
+// Theme Transitions
+// ========================
+
+body,
+.card,
+.navbar,
+.mat-mdc-card,
+button,
+.mat-mdc-button,
+.mat-mdc-form-field,
+.mat-mdc-chip {
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease,
+    border-color 0.4s ease;
+}
+
+// ========================
+// Custom Styles
+// ========================
+::ng-deep .mat-mdc-snack-bar-container {
+  border-radius: 8px;
+  font-weight: 500;
+  background-color: #1976d2 !important;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }

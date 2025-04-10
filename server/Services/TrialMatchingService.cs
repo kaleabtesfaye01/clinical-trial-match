@@ -44,25 +44,15 @@ namespace ClinicalTrialMatcher.Services
             }
 
             // 4. Apply location filters if input.City, input.State, or input.Country are provided
-            if (!string.IsNullOrWhiteSpace(input.City))
+            if (!string.IsNullOrWhiteSpace(input.City) ||
+                !string.IsNullOrWhiteSpace(input.State) ||
+                !string.IsNullOrWhiteSpace(input.Country))
             {
-                string cityInput = input.City.Trim();
                 query = query.Where(ct => ct.Locations != null && ct.Locations.Any(loc =>
-                    EF.Functions.ILike(loc.City ?? "", $"%{cityInput}%")));
-            }
-
-            if (!string.IsNullOrWhiteSpace(input.State))
-            {
-                string stateInput = input.State.Trim();
-                query = query.Where(ct => ct.Locations != null &&
-                    ct.Locations.Any(loc => EF.Functions.ILike(loc.State ?? "", $"%{stateInput}%")));
-            }
-
-            if (!string.IsNullOrWhiteSpace(input.Country))
-            {
-                string countryInput = input.Country.Trim();
-                query = query.Where(ct => ct.Locations != null &&
-                    ct.Locations.Any(loc => EF.Functions.ILike(loc.Country ?? "", $"%{countryInput}%")));
+                    (!string.IsNullOrWhiteSpace(input.City) && EF.Functions.ILike(loc.City ?? "", $"%{input.City.Trim()}%")) ||
+                    (!string.IsNullOrWhiteSpace(input.State) && EF.Functions.ILike(loc.State ?? "", $"%{input.State.Trim()}%")) ||
+                    (!string.IsNullOrWhiteSpace(input.Country) && EF.Functions.ILike(loc.Country ?? "", $"%{input.Country.Trim()}%"))
+                ));
             }
 
             // 5. Apply an age filter if input.Age is provided.

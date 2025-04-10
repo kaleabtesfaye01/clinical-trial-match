@@ -1,217 +1,461 @@
+// =====================
+// Layout Container
+// =====================
 .home-container {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  background-color: #f9fafb;
 }
 
+// =====================
 // Hero Section
+// =====================
 .hero {
-  background: linear-gradient(135deg, #1976d2 0%, #64b5f6 100%);
-  color: white;
-  padding: 120px 0;
-  text-align: center;
+  background-color: #eaf4ff;
+  padding: 80px 24px;
 
   .hero-content {
-    max-width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px;
+    gap: 40px;
 
-    h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 24px;
-      line-height: 1.2;
+    .text {
+      flex: 1 1 500px;
+
+      h1 {
+        font-size: 2.75rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 20px;
+      }
+
+      p {
+        font-size: 1.25rem;
+        color: #475569;
+        margin-bottom: 32px;
+        line-height: 1.6;
+      }
+
+      .start-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0 24px;
+        height: 48px;
+        border-radius: 8px;
+        text-transform: none;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+        mat-icon {
+          font-size: 20px;
+          margin-right: 8px;
+        }
+
+        &:hover {
+          background-color: #1565c0 !important;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+      }
     }
 
-    .hero-subtitle {
-      font-size: 1.25rem;
-      margin-bottom: 48px;
-      opacity: 0.9;
-    }
-
-    .hero-actions {
+    .svg {
+      flex: 1 1 400px;
       display: flex;
-      gap: 16px;
       justify-content: center;
+      align-items: center;
+    }
+  }
+}
 
-      a {
-        min-width: 160px;
+// =====================
+// Features Section
+// =====================
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  padding: 80px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  .feature {
+    background: white;
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    .feature-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: #1976d2;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 12px 0 16px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+  }
+}
+
+// =====================
+// How It Works Section
+// =====================
+.how-it-works {
+  background-color: #ffffff;
+  padding: 80px 24px;
+
+  h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: #1e293b;
+    margin-bottom: 48px;
+  }
+
+  .steps-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    .step-card {
+      background-color: #f9fafb;
+      border-radius: 8px;
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+      .step-badge {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto 16px;
+        background-color: #1976d2;
+        color: white;
+        border-radius: 50%;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 12px;
+      }
+
+      p {
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.6;
       }
     }
   }
 }
 
-// Section Styles
-section {
-  padding: 80px 0;
+// =====================
+// FAQ Section
+// =====================
+.faq {
+  background: #ffffff;
+  padding: 80px 24px;
 
   h2 {
     text-align: center;
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 48px;
-  }
-}
-
-.section-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-// Features Section
-.features {
-  background-color: #f8f9fa;
-
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 32px;
+    font-size: 2rem;
+    color: #1e293b;
+    margin-bottom: 40px;
   }
 
-  .feature-card {
-    text-align: center;
-    padding: 32px;
-    height: 100%;
-    transition: transform 0.2s;
-
-    &:hover {
-      transform: translateY(-4px);
-    }
-
-    mat-icon {
-      font-size: 48px;
-      height: 48px;
-      width: 48px;
-      margin-bottom: 24px;
-    }
-
-    h3 {
-      color: #2c3e50;
-      font-size: 1.5rem;
-      margin-bottom: 16px;
-    }
-
-    p {
-      color: #495057;
-      line-height: 1.6;
-    }
-  }
-}
-
-// How It Works Section
-.how-it-works {
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 32px;
-  }
-
-  .step-card {
-    text-align: center;
-    padding: 32px;
-    background-color: white;
+  mat-expansion-panel {
+    margin-bottom: 12px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
 
-    .step-number {
-      width: 48px;
-      height: 48px;
-      background-color: #1976d2;
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin: 0 auto 24px;
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    h3 {
-      color: #2c3e50;
-      font-size: 1.25rem;
-      margin-bottom: 16px;
+    mat-panel-title {
+      font-weight: 600;
+      color: #334155;
     }
 
     p {
-      color: #495057;
-      line-height: 1.6;
+      padding: 12px 0;
+      color: #475569;
     }
+  }
+
+  .mat-expansion-panel-header {
+    padding: 24px;
+
+    .mat-expansion-panel-header-title {
+      font-weight: 500;
+      color: #1e293b;
+    }
+  }
+
+  .mat-expansion-panel-body {
+    padding: 0 24px 24px;
+    color: #475569;
   }
 }
 
-// CTA Section
-.cta {
-  background-color: #e3f2fd;
-  text-align: center;
+// =====================
+// Footer Section
+// =====================
+.footer {
+  background-color: #f8fafc;
+  color: #0f172a;
+  padding: 48px 24px 24px;
+  font-size: 0.95rem;
+  border-top: 1px solid #e2e8f0;
 
-  h2 {
+  .footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 40px;
     margin-bottom: 24px;
+
+    .footer-brand {
+      flex: 1 1 300px;
+
+      h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: #475569;
+        line-height: 1.6;
+        max-width: 400px;
+      }
+    }
+
+    .footer-links {
+      flex: 1 1 200px;
+
+      h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #0f172a;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+          margin-bottom: 8px;
+
+          a {
+            color: #334155;
+            text-decoration: none;
+            font-weight: 500;
+
+            &:hover {
+              color: #2563eb;
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
   }
 
-  p {
-    font-size: 1.25rem;
-    color: #495057;
-    margin-bottom: 32px;
-  }
-
-  a {
-    min-width: 200px;
+  .footer-bottom {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.85rem;
   }
 }
 
-// Footer
-footer {
-  background-color: #2c3e50;
-  color: white;
-  padding: 48px 0;
-  text-align: center;
+.dark-mode {
+  .footer {
+    background-color: #0f172a;
+    color: #e2e8f0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 
-  p {
-    margin: 8px 0;
-    opacity: 0.9;
-  }
+    .footer-brand p,
+    .footer-bottom {
+      color: #94a3b8;
+    }
 
-  a {
-    color: #64b5f6;
-    text-decoration: none;
+    .footer-links h4 {
+      color: #f1f5f9;
+    }
 
-    &:hover {
-      text-decoration: underline;
+    .footer-links a {
+      color: #cbd5e1;
+
+      &:hover {
+        color: #38bdf8;
+      }
     }
   }
 }
 
-// Responsive Design
+// =====================
+// Responsive Breakpoints
+// =====================
 @media (max-width: 768px) {
   .hero {
-    padding: 80px 0;
+    padding: 60px 16px;
 
-    h1 {
-      font-size: 2.5rem;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-    }
-
-    .hero-actions {
+    .hero-content {
       flex-direction: column;
-      align-items: center;
+      text-align: center;
+
+      .text,
+      .svg {
+        flex: 1 1 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
     }
   }
 
-  section {
-    padding: 60px 0;
+  .features {
+    padding: 48px 16px;
+    gap: 24px;
+  }
+
+  .cta {
+    padding: 60px 16px;
 
     h2 {
-      font-size: 2rem;
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+    }
+  }
+}
+
+// =====================
+// Dark Mode Overrides
+// =====================
+.dark-mode {
+  .hero {
+    background-color: #1e293b;
+
+    h1,
+    p {
+      color: #f1f5f9;
+    }
+
+    .start-btn {
+      background-color: #38bdf8 !important;
+      color: #0f172a !important;
+
+      &:hover {
+        background-color: #0ea5e9 !important;
+      }
     }
   }
 
-  .features-grid,
-  .steps-grid {
-    grid-template-columns: 1fr;
+  .features .feature {
+    background-color: #1f2937;
+    color: #e2e8f0;
+
+    h2 {
+      color: #f8fafc;
+    }
+
+    p {
+      color: #94a3b8;
+    }
+
+    .feature-icon {
+      color: #38bdf8;
+    }
+  }
+
+  .how-it-works {
+    background-color: #0f172a;
+
+    h2,
+    h3,
+    p {
+      color: #e2e8f0;
+    }
+
+    .step-card {
+      background-color: #1e293b;
+    }
+  }
+
+  .faq {
+    background-color: #0f172a;
+
+    h2,
+    mat-panel-title,
+    p {
+      color: #f8fafc;
+    }
+
+    mat-expansion-panel {
+      background-color: #1f2937 !important;
+    }
+  }
+
+  footer.footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+
+    .footer-brand p,
+    .footer-bottom {
+      color: #94a3b8;
+    }
+
+    .footer-links h4 {
+      color: #f1f5f9;
+    }
+
+    .footer-links a {
+      color: #cbd5e1;
+
+      &:hover {
+        color: #38bdf8;
+      }
+    }
   }
 }

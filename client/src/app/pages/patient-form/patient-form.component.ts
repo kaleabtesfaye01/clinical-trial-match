@@ -1,20 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { PatientData } from '../../models/patient-data.model';
+import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.component';
 import { TrialService } from '../../core/services/trial.service';
-import { ClinicalTrial } from '../../models/clinical-trial.model';
-import { TrialListComponent } from '../trial-list/trial-list.component';
 
 @Component({
   selector: 'app-patient-form',
@@ -24,69 +21,58 @@ import { TrialListComponent } from '../trial-list/trial-list.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule,
     MatButtonModule,
-    MatCardModule,
-    TrialListComponent
+    MatSelectModule,
+    MatStepperModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    NavMenuComponent,
   ],
   templateUrl: './patient-form.component.html',
   styleUrls: ['./patient-form.component.scss'],
 })
 export class PatientFormComponent implements OnInit {
   patientForm!: FormGroup;
-  submittedData: PatientData | null = null;
-  matchingTrials: ClinicalTrial[] = [];
   loading = false;
-  errorMessage: string = '';
+  error = '';
 
-  constructor(private fb: FormBuilder, private trialService: TrialService) {}
+  constructor(
+    private fb: FormBuilder,
+    private trialService: TrialService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.initForm();
-  }
-
-  initForm(): void {
     this.patientForm = this.fb.group({
-      notes: ['', [Validators.required]],
+      notes: ['', Validators.required],
       age: [null, [Validators.min(0), Validators.max(120)]],
       sex: [''],
       condition: [''],
       city: [''],
       state: [''],
-      country: ['']
+      country: [''],
     });
-  }
-
-  get f() {
-    return this.patientForm.controls;
   }
 
   onSubmit(): void {
     if (this.patientForm.valid) {
       this.loading = true;
-      this.errorMessage = '';
-      
-      const input: PatientData = {
-        notes: this.f['notes'].value,
-        age: this.f['age'].value,
-        sex: this.f['sex'].value,
-        condition: this.f['condition'].value,
-        city: this.f['city'].value,
-        state: this.f['state'].value,
-        country: this.f['country'].value
-      };
+      this.error = '';
 
-      this.trialService.matchTrialsWithAi(input).subscribe({
+      const formData = this.patientForm.value;
+
+      this.trialService.matchTrialsWithAi(formData).subscribe({
         next: (matchedTrials) => {
-          this.matchingTrials = matchedTrials;
-          this.submittedData = input;
+          this.trialService.setMatchedTrials(matchedTrials);
+          this.router.navigate(['/trial-list']);
+        },
+        error: () => {
+          this.error = 'Error matching trials. Please try again.';
           this.loading = false;
         },
-        error: (err) => {
-          console.error('Error matching with AI', err);
-          this.errorMessage = 'An error occurred while matching trials.';
+        complete: () => {
           this.loading = false;
-        }
+        },
       });
     } else {
       this.patientForm.markAllAsTouched();

@@ -1,0 +1,46 @@
+:host {
+  display: inline-block;
+  background-color: currentColor;
+  mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+// ========================
+// Animations
+// ========================
+.pulse {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.fade {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.glow {
+  filter: drop-shadow(0 0 4px currentColor);
+  transition: filter 0.3s ease;
+
+  &:hover {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+}

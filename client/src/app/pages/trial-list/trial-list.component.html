@@ -1,58 +1,65 @@
-<div *ngIf="loading">
-  <div class="loading-container">
-    <mat-spinner></mat-spinner>
+<app-nav-menu></app-nav-menu>
+
+<div class="trial-list-container">
+  <div class="header">
+    <h1>Matched Clinical Trials</h1>
+    <button mat-stroked-button color="primary" (click)="startNewSearch()">
+      <mat-icon>search</mat-icon>
+      Start New Search
+    </button>
   </div>
-</div>
 
-<div *ngIf="!loading && (!trials || trials.length === 0)">
-  <div class="no-results">
-    <p>No matching trials found.</p>
+  <div *ngIf="loading" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Loading personalized matches...</p>
   </div>
-</div>
 
-<div *ngIf="!loading && trials && trials.length > 0">
-  <div class="trial-list-container">
-    <div class="trials-grid">
-      <mat-card class="trial-card" *ngFor="let trial of trials; trackBy: trackByNctId" (click)="openTrialDetails(trial)">
-        <mat-card-header>
-          <mat-card-title>{{ trial.briefTitle }}</mat-card-title>
-          <mat-card-subtitle>
-            <div class="header-info">
-              <span>NCT ID: {{ trial.nctId }}</span>
-              <span class="status-chip" [class.active]="trial.overallStatus === 'Recruiting'">
-                {{ trial.overallStatus }}
-              </span>
-              <span>Last Updated: {{ trial.lastUpdatePostDate | date }}</span>
-            </div>
-          </mat-card-subtitle>
-        </mat-card-header>
+  <div *ngIf="!loading && trials.length === 0" class="no-results">
+    <mat-icon>sentiment_dissatisfied</mat-icon>
+    <h2>No Trials Found</h2>
+    <p>We couldn’t find trials based on your criteria. You can try again with different information.</p>
+    <button mat-raised-button color="primary" (click)="startNewSearch()">Try Again</button>
+  </div>
 
-        <mat-card-content>
-          <div class="conditions" *ngIf="trial.conditions && trial.conditions.length > 0">
-            <h4>Conditions:</h4>
-            <mat-chip-listbox>
-              <mat-chip *ngFor="let condition of trial.conditions.slice(0, 3); trackBy: trackByCondition">{{ condition }}</mat-chip>
-              <mat-chip *ngIf="trial.conditions.length > 3">+{{ trial.conditions.length - 3 }} more</mat-chip>
-            </mat-chip-listbox>
-          </div>
+  <div class="trials-grid" *ngIf="!loading && trials.length > 0">
+    <mat-card *ngFor="let trial of trials" class="trial-card">
+      <mat-card-header>
+        <mat-card-title>{{ trial.briefTitle }}</mat-card-title>
+      </mat-card-header>
 
-          <div class="locations" *ngIf="trial.locations && trial.locations.length > 0">
-            <h4>Locations:</h4>
-            <div class="location" *ngFor="let location of trial.locations.slice(0, 2); trackBy: trackByLocation">
-              <span class="location-status" [class.active]="location.status === 'Recruiting'">
-                {{ location.status }}
-              </span>
-              <span>{{ location.city }}, {{ location.state }}, {{ location.country }}</span>
-            </div>
-            <p class="more-locations" *ngIf="trial.locations.length > 2">+{{ trial.locations.length - 2 }} more locations</p>
-          </div>
+      <mat-card-content>
+        <div class="trial-section" *ngIf="trial.conditions?.length">
+          <h3>Condition{{ (trial.conditions?.length ?? 0) > 1 ? 's' : '' }}</h3>
+          <mat-chip-listbox>
+            <mat-chip *ngFor="let condition of trial.conditions?.slice(0, 3) ?? []">
+              {{ condition }}
+            </mat-chip>
+            <mat-chip *ngIf="(trial.conditions?.length ?? 0) > 3" class="more-chip">
+              +{{ (trial.conditions?.length ?? 0) - 3 }} more
+            </mat-chip>
+          </mat-chip-listbox>
+        </div>
 
-          <div class="summary" *ngIf="trial.briefSummary">
-            <h4>Brief Summary:</h4>
-            <p>{{ trial.briefSummary }}</p>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
+        <div class="trial-section" *ngIf="trial.locations?.length">
+          <h3>Trial Locations</h3>
+          <ul>
+            <li *ngFor="let location of trial.locations?.slice(0, 3) ?? []">
+              {{ formatLocation(location) }}
+            </li>
+            <li *ngIf="(trial.locations?.length ?? 0) > 3" class="more">
+              +{{ (trial.locations?.length ?? 0) - 3 }} additional site{{ (trial.locations?.length ?? 0) > 4 ? 's' : ''
+              }}
+            </li>
+          </ul>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-button color="view-details-btn" (click)="viewTrialDetails(trial)">
+          <mat-icon>info</mat-icon>
+          View Trial Details
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>

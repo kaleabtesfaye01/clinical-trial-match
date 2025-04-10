@@ -1,76 +1,98 @@
-<div class="home-container">
-  <!-- Hero Section -->
-  <section class="hero">
+<app-nav-menu></app-nav-menu>
+
+<main class="home-container">
+  <!-- HERO -->
+  <section class="hero" @fadeIn>
     <div class="hero-content">
-      <h1>Find Your Perfect Clinical Trial Match</h1>
-      <p class="hero-subtitle">
-        Using AI-powered technology to connect patients with groundbreaking clinical trials
-      </p>
-      <div class="hero-actions">
-        <a mat-raised-button color="primary" routerLink="/patient-form">
-          Find Trials Now
-        </a>
-        <a mat-stroked-button [href]="'https://clinicaltrials.gov'" target="_blank">
-          Learn More
-        </a>
+      <div class="text">
+        <h1>Personalized Clinical Trial Matching</h1>
+        <p>
+          Discover research studies tailored to your condition, location, and goals. Fast. Secure. Always personal.
+        </p>
+        <button mat-raised-button color="primary" class="start-btn" (click)="startSearch()"
+          aria-label="Start trial matching process">
+          <mat-icon>search</mat-icon>
+          Start Matching
+        </button>
+
+      </div>
+      <div class="svg">
+        <app-svg-icon path="assets/undraw_medicine_hqqg.svg" size="400px" label="Illustration" animation="pulse"
+          style="color: #1976d2" />
       </div>
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="features">
-    <div class="section-content">
-      <h2>Why Choose Our Platform?</h2>
-      <div class="features-grid">
-        @for (feature of features; track feature.title) {
-          <mat-card class="feature-card">
-            <mat-card-content>
-              <mat-icon color="primary">{{ feature.icon }}</mat-icon>
-              <h3>{{ feature.title }}</h3>
-              <p>{{ feature.description }}</p>
-            </mat-card-content>
-          </mat-card>
-        }
-      </div>
+  <!-- FEATURES -->
+  <section class="features" @staggeredFadeIn>
+    <div class="feature">
+      <mat-icon class="feature-icon">psychology</mat-icon>
+      <h2>AI-Powered Matching</h2>
+      <p>Our smart engine scans thousands of trials to find the best fit for you.</p>
+    </div>
+    <div class="feature">
+      <mat-icon class="feature-icon">location_on</mat-icon>
+      <h2>Location Smart</h2>
+      <p>Get matched with trials nearby or across the country.</p>
+    </div>
+    <div class="feature">
+      <mat-icon class="feature-icon">lock</mat-icon>
+      <h2>Your Privacy, Always</h2>
+      <p>Your medical info stays encrypted, private, and under your control.</p>
     </div>
   </section>
 
-  <!-- How It Works Section -->
-  <section class="how-it-works">
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" @staggeredFadeIn>
     <div class="section-content">
       <h2>How It Works</h2>
-      <div class="steps-grid">
-        @for (step of howItWorks; track step.step) {
-          <div class="step-card">
-            <div class="step-number">{{ step.step }}</div>
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.description }}</p>
-          </div>
-        }
+      <div class="steps-container">
+        <div class="step-card" *ngFor="let step of howItWorks">
+          <div class="step-badge">{{ step.step }}</div>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.description }}</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="cta">
+  <!-- FAQ -->
+  <section class="faq" @fadeIn>
     <div class="section-content">
-      <h2>Ready to Find Your Clinical Trial?</h2>
-      <p>
-        Join thousands of patients who have found their perfect clinical trial match
-      </p>
-      <a mat-raised-button color="primary" routerLink="/patient-form">
-        Get Started Now
-      </a>
+      <h2>Frequently Asked Questions</h2>
+      <mat-accordion>
+        <mat-expansion-panel *ngFor="let item of faqs">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ item.q }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>{{ item.a }}</p>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="section-content">
-      <p>
-        Data sourced from <a href="https://clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a>
-      </p>
-      <p> {{ currentYear }} Clinical Trial Matcher. All rights reserved.</p>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>Clinical Trial Matcher</h3>
+          <p>Helping patients discover breakthrough clinical trials quickly, securely, and with confidence.</p>
+        </div>
+
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="https://clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; {{ currentYear }} Clinical Trial Matcher. All rights reserved.</p>
+      </div>
     </div>
   </footer>
-</div>
+
+
+</main>

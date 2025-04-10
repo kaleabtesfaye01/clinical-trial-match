@@ -1,18 +1,40 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 import { ClinicalTrial } from '../../models/clinical-trial.model';
-import { PatientData } from '../../models/patient-data.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class TrialService {
-  private baseUrl = 'http://localhost:5230/api/trials';
+  private apiUrl = '/api/trials';
+  private matchedTrialsSubject = new BehaviorSubject<ClinicalTrial[]>([]);
+  matchedTrials$ = this.matchedTrialsSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  matchTrialsWithAi(input: PatientData): Observable<ClinicalTrial[]> {
-    return this.http.post<ClinicalTrial[]>(`${this.baseUrl}/match`, input);
+  matchTrialsWithAi(input: any): Observable<ClinicalTrial[]> {
+    return this.http.post<ClinicalTrial[]>(`${this.apiUrl}/match`, input).pipe(
+      map(trials => {
+        this.setMatchedTrials(trials);
+        return trials;
+      })
+    );
+  }
+
+  setMatchedTrials(trials: ClinicalTrial[]): void {
+    this.matchedTrialsSubject.next(trials);
+  }
+
+  getTrialById(nctId: string): Observable<ClinicalTrial> {
+    return this.matchedTrials$.pipe(
+      map(trials => {
+        const trial = trials.find(t => t.nctId === nctId);
+        if (!trial) {
+          throw new Error('Trial not found');
+        }
+        return trial;
+      })
+    );
   }
 }

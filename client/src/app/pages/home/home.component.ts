@@ -1,69 +1,110 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  trigger,
+  style,
+  animate,
+  transition,
+  query,
+  stagger,
+} from '@angular/animations';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { SvgIconComponent } from '../../shared/components/svg-icon/svg-icon.component';
+import { NavMenuComponent } from '../../shared/components/nav-menu/nav-menu.component';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [
+    MatExpansionModule,
+    MatIcon,
+    SvgIconComponent,
+    NavMenuComponent,
     CommonModule,
-    RouterModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule
   ],
+  standalone: true,
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'none' })),
+      ]),
+    ]),
+    trigger('staggeredFadeIn', [
+      transition(':enter', [
+        query(
+          '.feature, .step-card',
+          [
+            style({ opacity: 0, transform: 'translateY(20px)' }),
+            stagger(
+              150,
+              animate(
+                '400ms ease-out',
+                style({ opacity: 1, transform: 'none' })
+              )
+            ),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class HomeComponent {
   currentYear = new Date().getFullYear();
-  
-  features = [
-    {
-      icon: 'search',
-      title: 'Smart Matching',
-      description: 'Our AI-powered system analyzes patient data to find the most relevant clinical trials.'
-    },
-    {
-      icon: 'location_on',
-      title: 'Location-Based',
-      description: 'Find trials near you with our location-aware search capabilities.'
-    },
-    {
-      icon: 'update',
-      title: 'Real-Time Updates',
-      description: 'Access the latest clinical trial information, updated in real-time.'
-    },
-    {
-      icon: 'verified_user',
-      title: 'Verified Trials',
-      description: 'All trials are verified and sourced from ClinicalTrials.gov.'
-    }
-  ];
 
   howItWorks = [
     {
       step: 1,
-      title: 'Enter Patient Information',
-      description: 'Provide basic patient details and medical history.'
+      title: 'Share Your Info',
+      description:
+        'Provide details about your health condition and preferences.',
     },
     {
       step: 2,
-      title: 'AI-Powered Matching',
-      description: 'Our system analyzes the data to find relevant trials.'
+      title: 'Get Matched',
+      description:
+        'Our AI scans thousands of trials to find your best options.',
     },
     {
       step: 3,
-      title: 'Review Matches',
-      description: 'Browse through matched trials with detailed information.'
+      title: 'Explore & Connect',
+      description:
+        'Review trial details and connect with coordinators securely.',
+    },
+  ];
+
+  faqs = [
+    {
+      q: 'Is my personal data safe?',
+      a: 'Absolutely. Your information is encrypted and never shared without consent.',
     },
     {
-      step: 4,
-      title: 'Take Action',
-      description: 'Contact trial coordinators or save trials for later.'
-    }
+      q: 'How accurate is the matching?',
+      a: 'Our AI engine is trained on real clinical data for high-quality results.',
+    },
+    {
+      q: 'Is this service free?',
+      a: 'Yes, it’s completely free for patients.',
+    },
   ];
+
+  constructor(private router: Router, private snackBar: MatSnackBar) {}
+
+  startSearch(): void {
+    this.snackBar.open('Let’s match you with clinical trials!', 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      panelClass: ['mat-primary'],
+    });
+
+    setTimeout(() => {
+      this.router.navigate(['/patient-form']);
+    }, 800);
+  }
 }
