@@ -1,59 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // For *ngIf and *ngFor
-import { TrialService } from '../../core/services/trial.service';
-import { ClinicalTrial, PagedResult } from '../../models/clinical-trial.model';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { ClinicalTrial } from '../../models/clinical-trial.model';
+import { TrialDetailComponent } from '../trial-detail/trial-detail.component';
+
+interface Location {
+  status?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+}
 
 @Component({
   selector: 'app-trial-list',
   standalone: true,
-  imports: [CommonModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    TrialDetailComponent
+  ],
   templateUrl: './trial-list.component.html',
   styleUrls: ['./trial-list.component.scss']
 })
-export class TrialListComponent implements OnInit {
-  trials: ClinicalTrial[] = [];
-  currentPage: number = 1;
-  pageSize: number = 10;
-  totalRecords: number = 0;
-  loading: boolean = false;
-  errorMessage: string = '';
+export class TrialListComponent {
+  @Input() trials: ClinicalTrial[] = [];
+  @Input() loading = false;
 
-  constructor(private trialService: TrialService) {}
+  constructor(private dialog: MatDialog) {}
 
-  ngOnInit(): void {
-    this.loadPage(this.currentPage);
-  }
-
-  loadPage(page: number): void {
-    this.loading = true;
-    this.trialService.getTrialsPaged(page, this.pageSize).subscribe({
-      next: (result: PagedResult) => {
-        this.trials = result.trials;
-        this.totalRecords = result.totalRecords;
-        this.currentPage = result.pageNumber;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching paged trials', err);
-        this.errorMessage = 'Error loading trials';
-        this.loading = false;
-      }
+  openTrialDetails(trial: ClinicalTrial): void {
+    this.dialog.open(TrialDetailComponent, {
+      data: { trial },
+      width: '100%',
+      maxWidth: '1200px',
+      maxHeight: '90vh',
+      panelClass: 'trial-detail-dialog'
     });
   }
 
-  nextPage(): void {
-    if (this.currentPage * this.pageSize < this.totalRecords) {
-      this.loadPage(this.currentPage + 1);
-    }
+  trackByNctId(_: number, trial: ClinicalTrial): string {
+    return trial.nctId;
   }
 
-  prevPage(): void {
-    if (this.currentPage > 1) {
-      this.loadPage(this.currentPage - 1);
-    }
+  trackByCondition(_: number, condition: string): string {
+    return condition;
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.totalRecords / this.pageSize);
+  trackByLocation(_: number, location: Location): string {
+    return `${location.city || ''}-${location.state || ''}-${location.country || ''}`;
   }
 }

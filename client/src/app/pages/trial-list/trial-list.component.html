@@ -1,23 +1,58 @@
-<div *ngIf="loading">Loading...</div>
-
-<div *ngIf="errorMessage">
-    <p>{{ errorMessage }}</p>
+<div *ngIf="loading">
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
 </div>
 
-<div *ngIf="!loading && !errorMessage && trials.length > 0">
-    <div *ngFor="let trial of trials">
-        <h3>{{ trial.briefTitle }}</h3>
-        <p>{{ trial.briefSummary }}</p>
-        <!-- Add other trial details as needed -->
+<div *ngIf="!loading && (!trials || trials.length === 0)">
+  <div class="no-results">
+    <p>No matching trials found.</p>
+  </div>
+</div>
+
+<div *ngIf="!loading && trials && trials.length > 0">
+  <div class="trial-list-container">
+    <div class="trials-grid">
+      <mat-card class="trial-card" *ngFor="let trial of trials; trackBy: trackByNctId" (click)="openTrialDetails(trial)">
+        <mat-card-header>
+          <mat-card-title>{{ trial.briefTitle }}</mat-card-title>
+          <mat-card-subtitle>
+            <div class="header-info">
+              <span>NCT ID: {{ trial.nctId }}</span>
+              <span class="status-chip" [class.active]="trial.overallStatus === 'Recruiting'">
+                {{ trial.overallStatus }}
+              </span>
+              <span>Last Updated: {{ trial.lastUpdatePostDate | date }}</span>
+            </div>
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="conditions" *ngIf="trial.conditions && trial.conditions.length > 0">
+            <h4>Conditions:</h4>
+            <mat-chip-listbox>
+              <mat-chip *ngFor="let condition of trial.conditions.slice(0, 3); trackBy: trackByCondition">{{ condition }}</mat-chip>
+              <mat-chip *ngIf="trial.conditions.length > 3">+{{ trial.conditions.length - 3 }} more</mat-chip>
+            </mat-chip-listbox>
+          </div>
+
+          <div class="locations" *ngIf="trial.locations && trial.locations.length > 0">
+            <h4>Locations:</h4>
+            <div class="location" *ngFor="let location of trial.locations.slice(0, 2); trackBy: trackByLocation">
+              <span class="location-status" [class.active]="location.status === 'Recruiting'">
+                {{ location.status }}
+              </span>
+              <span>{{ location.city }}, {{ location.state }}, {{ location.country }}</span>
+            </div>
+            <p class="more-locations" *ngIf="trial.locations.length > 2">+{{ trial.locations.length - 2 }} more locations</p>
+          </div>
+
+          <div class="summary" *ngIf="trial.briefSummary">
+            <h4>Brief Summary:</h4>
+            <p>{{ trial.briefSummary }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
     </div>
-</div>
-
-<div *ngIf="!loading && !errorMessage && trials.length === 0">
-    <p>No trials found.</p>
-</div>
-
-<div class="pagination-controls">
-    <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
-    <span>Page {{ currentPage }} of {{ totalPages }}</span>
-    <button (click)="nextPage()" [disabled]="currentPage * pageSize >= totalRecords">Next</button>
+  </div>
 </div>

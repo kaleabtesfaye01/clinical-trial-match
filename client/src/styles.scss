@@ -1,1 +1,177 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$clinical-trial-matcher-primary: mat.define-palette(mat.$indigo-palette);
+$clinical-trial-matcher-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$clinical-trial-matcher-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$clinical-trial-matcher-theme: mat.define-light-theme((
+  color: (
+    primary: $clinical-trial-matcher-primary,
+    accent: $clinical-trial-matcher-accent,
+    warn: $clinical-trial-matcher-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($clinical-trial-matcher-theme);
+
+/* Global styles */
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Dialog styles */
+.trial-detail-dialog {
+  .mat-mdc-dialog-container {
+    padding: 0;
+  }
+
+  .mdc-dialog__surface {
+    border-radius: 8px;
+  }
+
+  .mat-mdc-dialog-content {
+    max-height: 85vh;
+    padding: 0;
+  }
+}
+
+/* Trial list styles */
+.trial-list-container {
+  padding: 24px;
+}
+
+.trials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.trial-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.header-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.status-chip {
+  padding: 4px 8px;
+  border-radius: 16px;
+  background-color: #e9ecef;
+  font-size: 12px;
+
+  &.active {
+    background-color: #28a745;
+    color: white;
+  }
+}
+
+.conditions {
+  margin-top: 16px;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.locations {
+  margin-top: 16px;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .location {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .location-status {
+    padding: 2px 6px;
+    border-radius: 12px;
+    background-color: #e9ecef;
+    font-size: 12px;
+
+    &.active {
+      background-color: #28a745;
+      color: white;
+    }
+  }
+
+  .more-locations {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #6c757d;
+  }
+}
+
+.summary {
+  margin-top: 16px;
+
+  h4 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #495057;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Loading styles */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}

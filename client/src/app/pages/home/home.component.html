@@ -1,1 +1,76 @@
-<p>home works!</p>
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Find Your Perfect Clinical Trial Match</h1>
+      <p class="hero-subtitle">
+        Using AI-powered technology to connect patients with groundbreaking clinical trials
+      </p>
+      <div class="hero-actions">
+        <a mat-raised-button color="primary" routerLink="/patient-form">
+          Find Trials Now
+        </a>
+        <a mat-stroked-button [href]="'https://clinicaltrials.gov'" target="_blank">
+          Learn More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="section-content">
+      <h2>Why Choose Our Platform?</h2>
+      <div class="features-grid">
+        @for (feature of features; track feature.title) {
+          <mat-card class="feature-card">
+            <mat-card-content>
+              <mat-icon color="primary">{{ feature.icon }}</mat-icon>
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.description }}</p>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="section-content">
+      <h2>How It Works</h2>
+      <div class="steps-grid">
+        @for (step of howItWorks; track step.step) {
+          <div class="step-card">
+            <div class="step-number">{{ step.step }}</div>
+            <h3>{{ step.title }}</h3>
+            <p>{{ step.description }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="section-content">
+      <h2>Ready to Find Your Clinical Trial?</h2>
+      <p>
+        Join thousands of patients who have found their perfect clinical trial match
+      </p>
+      <a mat-raised-button color="primary" routerLink="/patient-form">
+        Get Started Now
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="section-content">
+      <p>
+        Data sourced from <a href="https://clinicaltrials.gov" target="_blank">ClinicalTrials.gov</a>
+      </p>
+      <p> {{ currentYear }} Clinical Trial Matcher. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

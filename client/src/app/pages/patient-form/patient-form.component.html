@@ -1,61 +1,80 @@
-<h2>Patient Data Form</h2>
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>Patient Data Form</mat-card-title>
+  </mat-card-header>
 
-<form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
-    <!-- Age -->
-    <div>
-        <label for="age">Age:</label>
-        <input id="age" type="number" formControlName="age" placeholder="Enter patient age" />
-        <div class="error" *ngIf="patientForm.get('age')?.touched && patientForm.get('age')?.invalid">
-            <small *ngIf="patientForm.get('age')?.errors?.['min']">Age cannot be negative.</small>
-            <small *ngIf="patientForm.get('age')?.errors?.['max']">Age cannot exceed 120.</small>
-        </div>
-    </div>
+  <mat-card-content>
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+      <!-- Notes (required) -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Patient Notes</mat-label>
+        <textarea matInput formControlName="notes" rows="4" placeholder="Enter unstructured patient notes or diagnosis..."></textarea>
+        <mat-error *ngIf="patientForm.get('notes')?.touched && patientForm.get('notes')?.invalid">
+          <small *ngIf="patientForm.get('notes')?.errors?.['required']">Notes are required</small>
+        </mat-error>
+      </mat-form-field>
 
-    <!-- Gender -->
-    <div>
-        <label for="gender">Gender:</label>
-        <select id="gender" formControlName="gender">
-            <option value="">-- Select --</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-        </select>
-    </div>
+      <!-- Age -->
+      <mat-form-field appearance="outline">
+        <mat-label>Age</mat-label>
+        <input matInput type="number" formControlName="age" placeholder="Enter patient age">
+        <mat-error *ngIf="patientForm.get('age')?.touched && patientForm.get('age')?.invalid">
+          <small *ngIf="patientForm.get('age')?.errors?.['min']">Age cannot be negative</small>
+          <small *ngIf="patientForm.get('age')?.errors?.['max']">Age cannot exceed 120</small>
+        </mat-error>
+      </mat-form-field>
 
-    <!-- Condition (optional) -->
-    <div>
-        <label for="condition">Condition:</label>
-        <input id="condition" type="text" formControlName="condition" placeholder="e.g. Diabetes, Cancer, etc." />
-    </div>
+      <!-- Sex -->
+      <mat-form-field appearance="outline">
+        <mat-label>Sex</mat-label>
+        <mat-select formControlName="sex">
+          <mat-option value="">-- Select --</mat-option>
+          <mat-option value="Male">Male</mat-option>
+          <mat-option value="Female">Female</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <!-- Location (optional) -->
-    <div>
-        <label for="location">Location:</label>
-        <input id="location" type="text" formControlName="location" placeholder="City, State, Country" />
-    </div>
+      <!-- Condition -->
+      <mat-form-field appearance="outline">
+        <mat-label>Condition</mat-label>
+        <input matInput formControlName="condition" placeholder="e.g. Diabetes, Cancer, etc.">
+      </mat-form-field>
 
-    <!-- Notes (required) -->
-    <div>
-        <label for="notes">Patient Notes:</label>
-        <textarea id="notes" formControlName="notes" rows="4"
-            placeholder="Unstructured patient notes or diagnosis..."></textarea>
-        <div class="error" *ngIf="patientForm.get('notes')?.touched && patientForm.get('notes')?.invalid">
-            <small *ngIf="patientForm.get('notes')?.errors?.['required']">Notes are required.</small>
-        </div>
-    </div>
+      <!-- Location -->
+      <div class="location-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city" placeholder="Enter city">
+        </mat-form-field>
 
-    <!-- Submit Button -->
-    <button type="submit" [disabled]="patientForm.invalid">
-        Submit
-    </button>
-</form>
+        <mat-form-field appearance="outline">
+          <mat-label>State</mat-label>
+          <input matInput formControlName="state" placeholder="Enter state">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Country</mat-label>
+          <input matInput formControlName="country" placeholder="Enter country">
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="patientForm.invalid">
+          Submit
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
 
 <!-- Preview Section -->
 <div class="preview" *ngIf="submittedData">
-    <h3>Preview of Submitted Data:</h3>
-    <p><strong>Age:</strong> {{ submittedData.age }}</p>
-    <p><strong>Gender:</strong> {{ submittedData.gender }}</p>
-    <p><strong>Condition:</strong> {{ submittedData.condition }}</p>
-    <p><strong>Location:</strong> {{ submittedData.location }}</p>
-    <p><strong>Notes:</strong> {{ submittedData.notes }}</p>
+  <h3>Preview of Submitted Data:</h3>
+  <p><strong>Age:</strong> {{ submittedData.age }}</p>
+  <p><strong>Sex:</strong> {{ submittedData.sex }}</p>
+  <p><strong>Condition:</strong> {{ submittedData.condition }}</p>
+  <p><strong>City:</strong> {{ submittedData.city }}</p>
+  <p><strong>State:</strong> {{ submittedData.state }}</p>
+  <p><strong>Country:</strong> {{ submittedData.country }}</p>
+  <p><strong>Notes:</strong> {{ submittedData.notes }}</p>
 </div>

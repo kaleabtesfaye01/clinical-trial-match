@@ -1,7 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ClinicalTrial, PagedResult } from '../../models/clinical-trial.model';
+import { ClinicalTrial } from '../../models/clinical-trial.model';
 import { PatientData } from '../../models/patient-data.model';
 
 @Injectable({
@@ -14,16 +14,5 @@ export class TrialService {
 
   matchTrialsWithAi(input: PatientData): Observable<ClinicalTrial[]> {
     return this.http.post<ClinicalTrial[]>(`${this.baseUrl}/match`, input);
-  }
-
-  // Call the paged endpoint
-  getTrialsPaged(
-    pageNumber: number,
-    pageSize: number
-  ): Observable<PagedResult> {
-    const params = new HttpParams()
-      .set('pageNumber', pageNumber.toString())
-      .set('pageSize', pageSize.toString());
-    return this.http.get<PagedResult>(`${this.baseUrl}/paged`, { params });
   }
 }

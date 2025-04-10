@@ -1,7 +1,9 @@
 export interface PatientData {
-    age?: number;
-    gender?: string;
-    condition?: string;
-    location?: string;
-    notes?: string;
-}  
+  notes?: string;
+  age?: number;
+  sex?: string;
+  condition?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+}
