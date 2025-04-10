@@ -11,6 +11,7 @@ namespace ClinicalTrialMatcher.Models
         [Key]
         public required string NctId { get; set; }
         public string? BriefTitle { get; set; }
+        public string? OfficialTitle { get; set; }
         public string? OverallStatus { get; set; }
         public string? StartDate { get; set; }
         public string? StudyFirstSubmitDate { get; set; }

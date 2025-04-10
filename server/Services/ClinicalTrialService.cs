@@ -36,7 +36,6 @@ namespace ClinicalTrialMatcher.Services
                     .Include(ct => ct.Locations)
                     .OrderBy(ct => ct.NctId)
                     .AsSplitQuery()
-                    .Take(1000)
                     .ToListAsync();
             }
 
@@ -45,6 +44,7 @@ namespace ClinicalTrialMatcher.Services
                                        "protocolSection.identificationModule.briefTitle," +
                                        "protocolSection.statusModule.overallStatus," +
                                        "protocolSection.descriptionModule.briefSummary," +
+                                       "protocolSection.identificationModule.officialTitle," +
                                        "protocolSection.conditionsModule.conditions," +
                                        "protocolSection.conditionsModule.keywords," +
                                        "protocolSection.designModule.studyType," +
@@ -68,7 +68,7 @@ namespace ClinicalTrialMatcher.Services
                                        "protocolSection.statusModule.lastUpdatePostDateStruct.date," +
                                        "protocolSection.designModule.phases";
             string filter = "&filter.overallStatus=RECRUITING";
-            string parameters = $"?{fieldsAndFilter}{filter}&countTotal=true&pageSize=1000";
+            string parameters = $"?{fieldsAndFilter}{filter}&pageSize=1000";
 
             string baseUrl = "https://clinicaltrials.gov/api/v2/studies";
             string url = baseUrl + parameters;
@@ -146,6 +146,7 @@ namespace ClinicalTrialMatcher.Services
                 {
                     NctId = GetSafeString(identification, "nctId"),
                     BriefTitle = GetSafeString(identification, "briefTitle"),
+                    OfficialTitle = GetSafeString(identification, "officialTitle"),
                     OverallStatus = GetSafeString(statusModule, "overallStatus"),
                     StartDate = GetSafeNestedString(statusModule, "startDateStruct", "date"),
                     StudyFirstSubmitDate = GetSafeString(statusModule, "studyFirstSubmitDate"),
