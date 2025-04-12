@@ -115,3 +115,4 @@ appsettings.*.json
 .history/
 
 db-data/
+!init-vector.sql
