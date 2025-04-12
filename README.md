@@ -5,10 +5,10 @@ An AI-powered application that matches patients with relevant clinical trials us
 ## Demo
 
 <div>
-    <a href="https://www.loom.com/share/66f19779c19f44e3b9a13dd8cc660671">
+    <a href="https://www.loom.com/share/66f19779c19f44e3b9a13dd8cc660671" target="_blank">
       <p>Clinical Trial Matcher - 12 April 2025 - Watch Video</p>
     </a>
-    <a href="https://www.loom.com/share/66f19779c19f44e3b9a13dd8cc660671">
+    <a href="https://www.loom.com/share/66f19779c19f44e3b9a13dd8cc660671" target="_blank">
       <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/66f19779c19f44e3b9a13dd8cc660671-06e43d7f18a3b653-full-play.gif">
     </a>
   </div>
