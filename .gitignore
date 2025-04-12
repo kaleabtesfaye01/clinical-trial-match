@@ -113,3 +113,5 @@ appsettings.*.json
 # -------------------------
 .vscode/
 .history/
+
+db-data/

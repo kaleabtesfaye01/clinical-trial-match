@@ -1,13 +1,16 @@
 using System.Text.Json.Serialization;
 using ClinicalTrialMatcher.Data;
+using ClinicalTrialMatcher.Extensions;
 using ClinicalTrialMatcher.Interfaces;
 using ClinicalTrialMatcher.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 // Read the connection string from configuration.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ??
-    "Host=localhost;Database=clinicaltrials;Username=student;Password=Kaleab66488605!";
+var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"] ??
+    builder.Configuration["DB_CONNECTION_STRING"];
+var openAiKey = builder.Configuration["OpenAI:ApiKey"] ??
+    builder.Configuration["OPENAI_API_KEY"];
 
 // Register the TrialsContext with PostgreSQL and enable vector support.
 builder.Services.AddDbContext<TrialsContext>(options =>
@@ -15,6 +18,13 @@ builder.Services.AddDbContext<TrialsContext>(options =>
     {
         npgsqlOptions.UseVector();
     }));
+
+// Register the OpenAI API key in the configuration.
+builder.Services.AddHttpClient<IVectorizationService>(client =>
+{
+    client.DefaultRequestHeaders.Authorization =
+        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", openAiKey);
+});
 
 // Register HttpClient and our service implementations.
 builder.Services.AddHttpClient<IClinicalTrialsService, ClinicalTrialsService>();
@@ -33,18 +43,28 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 var app = builder.Build();
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
+    app.UseVectorization();
 }
-
-app.UseCors(policy => policy
-    .WithOrigins("http://localhost:4200")
-    .AllowAnyHeader()
-    .AllowAnyMethod());
 
 app.MapControllers();
 

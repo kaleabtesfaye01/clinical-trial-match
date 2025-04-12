@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { ClinicalTrial } from '../../models/clinical-trial.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TrialService {
-  private apiUrl = '/api/trials';
+  private apiUrl = `${environment.apiUrl}/trials`;
   private matchedTrialsSubject = new BehaviorSubject<ClinicalTrial[]>([]);
   matchedTrials$ = this.matchedTrialsSubject.asObservable();
 
@@ -15,7 +16,7 @@ export class TrialService {
 
   matchTrialsWithAi(input: any): Observable<ClinicalTrial[]> {
     return this.http.post<ClinicalTrial[]>(`${this.apiUrl}/match`, input).pipe(
-      map(trials => {
+      map((trials) => {
         this.setMatchedTrials(trials);
         return trials;
       })
@@ -28,8 +29,8 @@ export class TrialService {
 
   getTrialById(nctId: string): Observable<ClinicalTrial> {
     return this.matchedTrials$.pipe(
-      map(trials => {
-        const trial = trials.find(t => t.nctId === nctId);
+      map((trials) => {
+        const trial = trials.find((t) => t.nctId === nctId);
         if (!trial) {
           throw new Error('Trial not found');
         }

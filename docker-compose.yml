@@ -1,0 +1,62 @@
+services:
+  client:
+    container_name: client
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    image: client:v1
+    ports:
+      - 80:80
+    depends_on:
+      - server
+    environment:
+      - API_URL=http://localhost:5230
+    networks:
+      - app-net
+  
+  server:
+    container_name: server
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    image: server:v1
+    ports:
+      - 5230:5230
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5230
+      - ASPNETCORE_HTTP_PORT=5230
+      - OpenAI__ApiKey=${OPENAI_API_KEY}
+      - ConnectionStrings__DefaultConnection=Host=db;Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-net
+  db:
+    container_name: db
+    image: ankane/pgvector
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+      - ./init-vector.sql:/docker-entrypoint-initdb.d/init-vector.sql
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-net
+
+volumes:
+  db-data:
+
+networks:
+  app-net:
+    driver: bridge
