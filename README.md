@@ -9,7 +9,7 @@ An AI-powered application that matches patients with relevant clinical trials us
       <p>Clinical Trial Matcher - 12 April 2025 - Watch Video</p>
     </a>
     <a href="https://www.loom.com/share/66f19779c19f44e3b9a13dd8cc660671" target="_blank" rel="noopener noreferrer">
-      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/66f19779c19f44e3b9a13dd8cc660671-06e43d7f18a3b653-full-play.gif">
+      <img width="600" src="https://cdn.loom.com/sessions/thumbnails/66f19779c19f44e3b9a13dd8cc660671-06e43d7f18a3b653-full-play.gif">
     </a>
   </div>
 
@@ -25,23 +25,23 @@ An AI-powered application that matches patients with relevant clinical trials us
 
 ### Homepage
 
-![Homepage](./docs/images/homepage.png)
+<img src="./docs/images/homepage.png" alt="Homepage" width="600" />
 _Landing page with introduction to the application_
 
 ### Patient Form
 
-![Patient Form](./docs/images/patient-form.png)
-![Patient Form](./docs/images/patient-form-2.png)
+<img src="./docs/images/patient-form.png" alt="Patient Form" width="600" />
+<img src="./docs/images/patient-form-2.png" alt="Patient Form 2" width="600" />
 _Form for entering patient medical information_
 
 ### Trial Results
 
-![Trial Results](./docs/images/trial-results.png)
+<img src="./docs/images/trial-results.png" alt="Trial Results" width="600" />
 _List of matched clinical trials with relevance scores_
 
 ### Trial Details
 
-![Trial Details](./docs/images/trial-details.png)
+<img src="./docs/images/trial-details.png" alt="Trial Details" width="600" />
 _Detailed view of a specific clinical trial_
 
 ## Quick Start
